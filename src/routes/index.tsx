@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HeroScrollSequence } from "@/components/HeroScrollSequence";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,35 +40,8 @@ function Index() {
       </header>
 
       <main className="relative z-10">
-        {/* Hero */}
-        <section className="h-screen flex flex-col items-center justify-center relative overflow-hidden px-margin-mobile md:px-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.08)_0%,transparent_70%)] pointer-events-none" />
-          <div className="text-center z-20 mb-12">
-            <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg uppercase tracking-[0.25em] text-on-surface mb-4 leading-none">
-              PRECISION. <span className="text-primary italic">REDEFINED.</span>
-            </h1>
-            <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60 tracking-[0.5em] uppercase">
-              Mastery in every micro-second
-            </p>
-          </div>
-          <div className="relative w-full max-w-[1000px] flex justify-center items-center">
-            <div className="absolute w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="float-animation relative z-10 transition-transform duration-700 hover:scale-105">
-              <img
-                alt="Luxury Watch Face"
-                className="w-full h-auto drop-shadow-[0_0_50px_rgba(197,160,89,0.2)]"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPFV2tn3VSte0O60ekZi37Ifp4jNar52I2d6nPITPOouBPcEomRgRbGCVf8pQgh30RtB4IB8u4obCKVYrxOchPKFGktDQkUIQ-l5m28ALk_1ESsf94rXPnDvX0MhHSZ2FS060tuJ8u-kTjZo5Yk6FrEcjvldXF3H4nLKQ6ufVD9LUe-CF83cWS4W4kGScfCYKOj16GEUaB1bImkKjsko2l7vf6q_dEEehIwuaJaXQxOcMwOEz6P7aPbXE-UmTYFGjMEaOVudfLuA"
-                style={{ maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)" }}
-              />
-            </div>
-          </div>
-          <div className="absolute bottom-12 flex flex-col items-center gap-4 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-            <span className="font-label-caps text-[10px] tracking-widest uppercase">Explore Heritage</span>
-            <div className="w-[1px] h-16 bg-gradient-to-b from-primary to-transparent relative">
-              <div className="absolute top-0 left-0 w-full h-1/3 bg-primary animate-bounce" />
-            </div>
-          </div>
-        </section>
+        {/* Hero — frame-by-frame scroll sequence */}
+        <HeroScrollSequence />
 
         {/* Artisanship */}
         <section className="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-section-padding">
