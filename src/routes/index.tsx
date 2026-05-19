@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HeroScrollSequence } from "@/components/HeroScrollSequence";
 
 export const Route = createFileRoute("/")({
   head: () => ({
