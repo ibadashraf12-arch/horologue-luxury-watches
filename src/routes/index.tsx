@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import { HeroScrollSequence } from "@/components/HeroScrollSequence";
+import { LuxuryWatchesParallax } from "@/components/LuxuryWatchesParallax";
+import { ContactParallax } from "@/components/ContactParallax";
+import { Preloader } from "@/components/Preloader";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,8 +23,22 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [preloaderDone, setPreloaderDone] = useState(false);
+  const bgMusicRef = useRef<HTMLAudioElement>(null);
+
+  const startBgMusic = () => {
+    const music = bgMusicRef.current;
+    if (!music) return;
+    music.volume = 0.25;
+    music.play().catch(() => {});
+  };
+
   return (
     <div className="min-h-screen bg-background text-on-surface">
+      <audio ref={bgMusicRef} src="/sounds/bg-music.mp3" loop preload="auto" />
+      {!preloaderDone && (
+        <Preloader onEnter={() => setPreloaderDone(true)} onStart={startBgMusic} />
+      )}
       {/* Top Nav */}
       <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-background/40 border-b border-primary/10">
         <nav className="max-w-[1280px] mx-auto flex items-center justify-between px-margin-mobile md:px-margin-desktop py-5">
@@ -28,14 +46,14 @@ function Index() {
             Horo<span className="text-primary italic">logue</span>
           </div>
           <ul className="hidden md:flex items-center gap-10 font-label-caps text-label-caps uppercase tracking-[0.25em] text-on-surface-variant">
-            <li className="hover:text-primary transition-colors cursor-pointer">Collections</li>
-            <li className="hover:text-primary transition-colors cursor-pointer">Heritage</li>
-            <li className="hover:text-primary transition-colors cursor-pointer">Artisanship</li>
-            <li className="hover:text-primary transition-colors cursor-pointer">Maison</li>
+            <li><a href="#luxury-watches" className="hover:text-primary transition-colors">Collections</a></li>
+            <li><a href="#hero" className="hover:text-primary transition-colors">Heritage</a></li>
+            <li><a href="#artisanship" className="hover:text-primary transition-colors">Artisanship</a></li>
+            <li><a href="#contact" className="hover:text-primary transition-colors">Maison</a></li>
           </ul>
-          <button className="font-label-caps text-label-caps uppercase tracking-[0.25em] text-primary border border-primary/30 px-5 py-2 hover:bg-primary hover:text-on-primary transition-all">
+          <a href="#contact" className="font-label-caps text-label-caps uppercase tracking-[0.25em] text-primary border border-primary/30 px-5 py-2 hover:bg-primary hover:text-on-primary transition-all">
             Boutique
-          </button>
+          </a>
         </nav>
       </header>
 
@@ -43,8 +61,11 @@ function Index() {
         {/* Hero — frame-by-frame scroll sequence */}
         <HeroScrollSequence />
 
+        {/* Luxury Watches — parallax horizontal slideshow */}
+        <LuxuryWatchesParallax />
+
         {/* Artisanship */}
-        <section className="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-section-padding">
+        <section id="artisanship" className="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-section-padding">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
             <div className="md:col-span-5">
               <div className="flex items-center gap-4 mb-6">
@@ -86,6 +107,9 @@ function Index() {
             </div>
           </div>
         </section>
+
+        {/* Contact — parallax slide-up over artisanship */}
+        <ContactParallax />
       </main>
 
       <footer className="border-t border-primary/10 mt-12">

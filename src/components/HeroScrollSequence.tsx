@@ -94,6 +94,7 @@ export function HeroScrollSequence() {
   return (
     <section
       ref={containerRef}
+      id="hero"
       className="relative h-screen w-full overflow-hidden bg-background"
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
