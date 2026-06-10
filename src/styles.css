@@ -113,3 +113,12 @@
   color: oklch(0.10 0.005 60);
   border-color: oklch(0.76 0.11 75);
 }
+
+/* Hide scrollbars while preserving scroll (configurator panel) */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
