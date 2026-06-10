@@ -76,7 +76,7 @@ export default async function handler(req, res) {
   const request  = new Request(url, { method: req.method, headers, body });
   const response = await server.fetch(request, {}, {});
 
-  res.status(response.status);
+  res.statusCode = response.status;
   for (const [k, v] of response.headers) res.setHeader(k, v);
 
   if (response.body) {
@@ -89,7 +89,10 @@ export default async function handler(req, res) {
 );
 
 // esbuild: bundle the handler + Vite server output + all npm deps into one file.
-// Only node: built-ins remain external (they are available in any Node.js runtime).
+// CJS output (.cjs) avoids esbuild's ESM `__require` interop shim, which throws
+// "Dynamic require of 'util' is not supported" inside react-dom's CJS server build.
+// Node built-ins (util, stream, async_hooks, …) stay as native `require()` calls
+// thanks to --platform=node.
 console.log("⏳  Bundling SSR function with esbuild…");
 execSync(
   [
@@ -97,9 +100,9 @@ execSync(
     JSON.stringify(entryPath),
     "--bundle",
     "--platform=node",
-    "--format=esm",
-    "--external:node:*",
-    `--outfile=${JSON.stringify(join(funcDir, "index.js"))}`,
+    "--format=cjs",
+    JSON.stringify("--footer:js=module.exports = module.exports.default;"),
+    `--outfile=${JSON.stringify(join(funcDir, "index.cjs"))}`,
   ].join(" "),
   { cwd: root, stdio: "inherit" }
 );
@@ -109,7 +112,7 @@ console.log("✅  SSR function bundled.");
 // Function config — Node.js 20 serverless
 writeFileSync(
   join(funcDir, ".vc-config.json"),
-  JSON.stringify({ runtime: "nodejs20.x", handler: "index.js", maxDuration: 30 }, null, 2)
+  JSON.stringify({ runtime: "nodejs20.x", handler: "index.cjs", maxDuration: 30 }, null, 2)
 );
 
 // ── 5. Routing ────────────────────────────────────────────────────────────────
@@ -134,6 +137,6 @@ console.log("✅  Vercel routing config written.");
 
 // ── 6. Bundle size report ─────────────────────────────────────────────────────
 import { statSync } from "node:fs";
-const bundleSize = statSync(join(funcDir, "index.js")).size;
+const bundleSize = statSync(join(funcDir, "index.cjs")).size;
 console.log(`\n📦  SSR bundle: ${(bundleSize / 1024).toFixed(1)} kB`);
 console.log("🎉  .vercel/output/ ready.  Deploy with: bunx vercel deploy --prebuilt --prod --archive=tgz");
